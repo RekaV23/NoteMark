@@ -1,4 +1,6 @@
+import { createNote, deleteNote, getNotes, readNote, writeNote } from '@/lib'
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { CreateNote, DeleteNote, GetNotes, ReadNote, WriteNote } from '@shared/types'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
@@ -19,7 +21,7 @@ function createWindow(): void {
     transparent: true,
     visualEffectState: 'active',
     titleBarStyle: 'hidden',
-  titleBarOverlay: true,
+    titleBarOverlay: true,
     // trafficLightPosition: { x: 15, y: 10 },
     backgroundColor: 'rgba(0, 0, 0, 0.9)',
     webPreferences: {
@@ -64,6 +66,11 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
 
+  ipcMain.handle('getNotes', (_, ...arg: Parameters<GetNotes>) => getNotes(...arg))
+  ipcMain.handle('readNote', (_, ...arg: Parameters<ReadNote>) => readNote(...arg))
+  ipcMain.handle('writeNote', (_, ...arg: Parameters<WriteNote>) => writeNote(...arg))
+  ipcMain.handle('createNote', (_, ...arg: Parameters<CreateNote>) => createNote(...arg))
+  ipcMain.handle('deleteNote', (_, ...arg: Parameters<DeleteNote>) => deleteNote(...arg))
   createWindow()
 
   app.on('activate', function () {
